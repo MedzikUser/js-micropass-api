@@ -1,105 +1,71 @@
-/**
- * MicroPass API server address.
- */
-const DOMAIN = "https://micropass-api.medzik.xyz"
+export class HttpClient {
+    /**
+     * MicroPass API server address.
+     */
+    static DOMAIN = "https://micropass-api.medzik.xyz"
 
-/**
- * Send a GET request to the server
- * @param path The path to send the request to (e.g. /identity/token)
- * @param params The parameters to send with the request
- */
-export async function get(path: string, token?: string): Promise<Response> {
-    const res = await fetch(`${DOMAIN}${path}`, {
-        method: "GET",
-        headers: {
-            "Authorization": token ? `Bearer ${token}` : undefined
-        }
-    })
+    /**
+     * Send a GET request to the server
+     * @param path The path to send the request to (e.g. /identity/token)
+     * @param params The parameters to send with the request
+     */
+    static async get(path: string, token?: string): Promise<Response> {
+        return this.send("GET", path, null, token)
+    }
 
-    await checkError(res)
+    /**
+     * Send a POST request to the server
+     * @param path The path to send the request to (e.g. /identity/token)\
+     * @param body The body to send with the request
+     * @param token The access token to send with the request
+     */
+    static async post(path: string, body?: any, token?: string): Promise<Response> {
+        return this.send("POST", path, body, token)
+    }
 
-    return res
-}
+    /**
+     * Send a PATCH request to the server
+     * @param path The path to send the request to (e.g. /identity/token)\
+     * @param body The body to send with the request
+     * @param token The access token to send with the request
+     */
+    static async patch(path: string, body?: any, token?: string): Promise<Response> {
+        return this.send("PATCH", path, body, token)
+    }
 
-/**
- * Send a POST request to the server
- * @param path The path to send the request to (e.g. /identity/token)\
- * @param body The body to send with the request
- * @param token The access token to send with the request
- */
-export async function post(path: string, body?: any, token?: string): Promise<Response> {
-    const res = await fetch(`${DOMAIN}${path}`, {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json",
-            "Authorization": token ? `Bearer ${token}` : undefined
-        },
-        body: JSON.stringify(body)
-    })
+    /**
+     * Send a PUT request to the server
+     * @param path The path to send the request to (e.g. /identity/token)
+     * @param body The body to send with the request
+     * @param token The access token to send with the request
+     */
+    static async put(path: string, body?: any, token?: string): Promise<Response> {
+        return this.send("PUT", path, body, token)
+    }
 
-    await checkError(res)
+    /**
+     * Send a DELETE request to the server
+     * @param path The path to send the request to (e.g. /identity/token)
+     * @param token The access token to send with the request
+     */
+    static async del(path: string, token?: string): Promise<Response> {
+        return this.send("DELETE", path, null, token)
+    }
 
-    return res
-}
+    private static async send(method: string, path: string, body?: any, token?: string): Promise<Response> {
+        const res = await fetch(`${this.DOMAIN}${path}`, {
+            method: method,
+            headers: {
+                "Content-Type": body ? "application/json" : undefined,
+                "Authorization": token ? `Bearer ${token}` : undefined
+            },
+            body: body ? JSON.stringify(body) : undefined
+        })
 
-/**
- * Send a PATCH request to the server
- * @param path The path to send the request to (e.g. /identity/token)\
- * @param body The body to send with the request
- * @param token The access token to send with the request
- */
-export async function patch(path: string, body?: any, token?: string): Promise<Response> {
-    const res = await fetch(`${DOMAIN}${path}`, {
-        method: "PATCH",
-        headers: {
-            "Content-Type": "application/json",
-            "Authorization": token ? `Bearer ${token}` : undefined
-        },
-        body: JSON.stringify(body)
-    })
+        await checkError(res)
 
-    await checkError(res)
-
-    return res
-}
-
-/**
- * Send a PUT request to the server
- * @param path The path to send the request to (e.g. /identity/token)
- * @param body The body to send with the request
- * @param token The access token to send with the request
- */
-export async function put(path: string, body?: any, token?: string): Promise<Response> {
-    const res = await fetch(`${DOMAIN}${path}`, {
-        method: "PUT",
-        headers: {
-            "Content-Type": "application/json",
-            "Authorization": token ? `Bearer ${token}` : undefined
-        },
-        body: JSON.stringify(body)
-    })
-
-    await checkError(res)
-
-    return res
-}
-
-/**
- * Send a DELETE request to the server
- * @param path The path to send the request to (e.g. /identity/token)
- * @param token The access token to send with the request
- */
-export async function del(path: string, token?: string): Promise<Response> {
-    const res = await fetch(`${DOMAIN}${path}`, {
-        method: "DELETE",
-        headers: {
-            "Authorization": token ? `Bearer ${token}` : undefined
-        }
-    })
-
-    await checkError(res)
-
-    return res
+        return res
+    }
 }
 
 async function checkError(res: Response) {

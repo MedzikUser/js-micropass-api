@@ -1,7 +1,7 @@
 import { aes, pbkdf2 } from "@medzik/libcrypto"
 
 import { IdentityApi } from "./identity"
-import * as client from "./client"
+import { HttpClient  } from "./client"
 
 /**
  * UserApi is a class that contains all the user related API calls.
@@ -30,7 +30,7 @@ export class UserApi {
         email: string;
         username: string;
     }> {
-        const response = await client.get("/user/whoami", this.accessToken)
+        const response = await HttpClient.get("/user/whoami", this.accessToken)
         return await response.json()
     }
 
@@ -42,7 +42,7 @@ export class UserApi {
      */
     async encryptionKey(email: string, password: string): Promise<string> {
         // send request to the API
-        const response = await client.get("/user/encryption_key", this.accessToken)
+        const response = await HttpClient.get("/user/encryption_key", this.accessToken)
         // parse the response
         const responseJson = await response.json()
 

@@ -1,6 +1,6 @@
 import { aes, pbkdf2, salt } from "@medzik/libcrypto"
 
-import * as client from './client'
+import { HttpClient  } from './client'
 
 /**
  * IdentityApi is a class that connects to the identity API.
@@ -29,7 +29,7 @@ export class IdentityApi {
         // encrypt the encryption key
         const encryptedEncryptionKey = aes.encryptAesCbc(passwordHashBase, encryptionKey)
 
-        await client.post('/identity/register', {
+        await HttpClient.post('/identity/register', {
             email,
             password: passwordHashFinal,
             password_hint: passwordHint,
@@ -49,7 +49,7 @@ export class IdentityApi {
         // compute a final password hash
         const passwordHashFinal = pbkdf2.hash512(passwordHashBase, email, 1)
 
-        const response = await client.post('/identity/token', {
+        const response = await HttpClient.post('/identity/token', {
             grant_type: 'password',
             email,
             password: passwordHashFinal
@@ -69,7 +69,7 @@ export class IdentityApi {
      * @returns The new access token.
      */
     static async refresh(refreshToken: string): Promise<string> {
-        const response = await client.post('/identity/token', {
+        const response = await HttpClient.post('/identity/token', {
             grant_type: 'refresh_token',
             refresh_token: refreshToken
         })

@@ -1,5 +1,5 @@
 import { Cipher } from "./ciphers"
-import * as client from "./client"
+import { HttpClient } from "./client"
 
 /**
  * CiphersApi is a class that provides methods for interacting with the ciphers API.
@@ -38,7 +38,7 @@ export class CiphersApi {
 
         // send the cipher to the server
         const body = { data: cipherData }
-        const response = await client.post("/ciphers/insert", body, this.accessToken)
+        const response = await HttpClient.post("/ciphers/insert", body, this.accessToken)
 
         // return the id of the inserted cipher
         return (await response.json()).id
@@ -59,7 +59,7 @@ export class CiphersApi {
         }
 
         // get the ciphers from the server
-        const response = await client.get(url, this.accessToken)
+        const response = await HttpClient.get(url, this.accessToken)
 
         // parse the response
         const responseJson = await response.json()
@@ -78,7 +78,7 @@ export class CiphersApi {
         }
 
         // get the cipher from the server
-        const response = await client.get(`/ciphers/get/${id}`, this.accessToken)
+        const response = await HttpClient.get(`/ciphers/get/${id}`, this.accessToken)
 
         // parse the response
         const responseJson = await response.json()
@@ -102,7 +102,7 @@ export class CiphersApi {
 
         // send the cipher to the server
         const body = { id, data: cipherData }
-        await client.patch(`/ciphers/update`, body, this.accessToken)
+        await HttpClient.patch(`/ciphers/update`, body, this.accessToken)
     }
 
     /**
@@ -110,6 +110,6 @@ export class CiphersApi {
      * @param id The id of the cipher to delete.
      */
     async delete(id: string): Promise<void> {
-        await client.del(`/ciphers/delete/${id}`, this.accessToken)
+        await HttpClient.del(`/ciphers/delete/${id}`, this.accessToken)
     }
 }
