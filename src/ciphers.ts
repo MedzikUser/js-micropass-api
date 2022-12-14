@@ -1,8 +1,11 @@
 import { aes } from "@medzik/libcrypto"
+import Debug from "debug"
 
 import { CipherFieldTypeT, CipherTypedFields, CipherTypeT } from "./ciphers.types"
 
 export * from "./ciphers.types"
+
+const debug = Debug("micropass:Cipher")
 
 /**
  * Cipher is a class that represents a cipher.
@@ -31,6 +34,8 @@ export class Cipher {
     updated: number
 
     constructor(json: string, encryptionKey?: string) {
+        debug(`Creating a new Cipher object from JSON string '${json}'`)
+
         // parse the JSON string to a JavaScript Object
         var jsonObject = JSON.parse(json)
 
@@ -40,8 +45,10 @@ export class Cipher {
             if (key === "data") {
                 // if the encryption key is defined, decrypt the data
                 if (encryptionKey) {
+                    debug(`Decrypting the cipher data with encryption key.`)
                     this.data = new CipherData(JSON.parse(aes.decryptAesCbc(encryptionKey, jsonObject[key])))
                 } else {
+                    debug(`Not decrypting the cipher data.`)
                     this.data = new CipherData(jsonObject[key])
                 }
 

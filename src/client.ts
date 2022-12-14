@@ -1,3 +1,7 @@
+import Debug from "debug"
+
+const debug = Debug("micropass:HttpClient")
+
 export class HttpClient {
     /**
      * MicroPass API server address.
@@ -53,6 +57,8 @@ export class HttpClient {
     }
 
     private static async send(method: string, path: string, body?: any, token?: string): Promise<Response> {
+        debug(`Sending '${method}' request to '${path}' with body '${body ? JSON.stringify(body) : null}'`)
+
         const res = await fetch(`${this.DOMAIN}${path}`, {
             method: method,
             headers: {
@@ -76,6 +82,11 @@ async function checkError(res: Response) {
 
     // get the error response from the response body
     const resErr: ErrorResponse = await res.json()
+
+    // log the error
+    debug(`Error status: ${res.status}`)
+    debug(`Error code: ${resErr.error}`)
+    debug(`Error message: ${resErr.error_description}`)
 
     // throw the error
     throw resErr
